@@ -7,7 +7,7 @@ pipeline {
         line 1
         line 2
         */
-        stage('Run Tests') {
+        stage('Tests') {
             parallel {
                 stage('Build') {
                     agent {
@@ -28,7 +28,7 @@ pipeline {
                         '''
                     }
                 }
-                stage('Test') {
+                stage('Unit Test') {
                      agent {
                         docker {
                             image 'node:18-alpine'
