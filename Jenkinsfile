@@ -1,39 +1,34 @@
 pipeline {
-    agent any 
+    agent any
 
     stages {
-        // This is a comment
-        /*
-        line 1
-        line 2
-        */
-        stage('Tests') {
-            stage('Build') {
-                agent {
-                    docker {
-                        image 'node:18-alpine'
-                        reuseNode true
-                    }
-                }
-                steps {
-                    sh '''
-                        ls -la
-                        node --version
-                        npm --version
-                        npm ci
-                        npm run build
-                        ls -la
-                    '''
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
                 }
             }
-            parallel {                
+            steps {
+                sh '''
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
+                '''
+            }
+        }
+        stage('Tests') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            parallel {
                 stage('Unit Test') {
-                     agent {
-                        docker {
-                            image 'node:18-alpine'
-                            reuseNode true
-                        }
-                    }
                     steps {
                         sh '''
                             echo "Test stage"
@@ -48,7 +43,7 @@ pipeline {
                     }
                 }
                 stage('E2E') {
-                     agent {
+                    agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                             reuseNode true
@@ -67,7 +62,7 @@ pipeline {
                             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report/', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
-                }       
+                }
             }
         }
     }
