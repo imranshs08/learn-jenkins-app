@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+.replit
+replit.nix
 
 # testing
 /coverage
