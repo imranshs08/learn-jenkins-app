@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent any 
 
     stages {
         stage('Build') {
@@ -21,14 +21,14 @@ pipeline {
             }
         }
         stage('Tests') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
             parallel {
                 stage('Unit Test') {
+                    agent {
+                        docker {
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
                     steps {
                         sh '''
                             echo "Test stage"
