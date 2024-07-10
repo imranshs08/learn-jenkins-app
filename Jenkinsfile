@@ -86,6 +86,17 @@ pipeline {
                     netlify --version
                 '''
             }
+            post {
+                    always {
+                        publishHTML([
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: false,
+                            reportDir: 'playwright-report/',
+                            reportFiles: 'index.html',
+                            reportName: 'HTML Report'
+                    ])
+                }
+            }
         }
     }
 }
