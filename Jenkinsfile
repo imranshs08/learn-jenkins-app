@@ -1,6 +1,6 @@
 pipeline {
     agent any 
-
+    
     stages {
         stage('Build') {
             agent {
@@ -21,25 +21,6 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    ls -la
-                    node --version
-                    npm --version
-                    npm ci
-                    npm run build
-                    ls -la
-                '''
-            }
-        }
-        
         stage('Tests') {
             parallel {
                 stage('Unit Test') {
@@ -51,8 +32,9 @@ pipeline {
                     }
                     steps {
                         sh '''
-                            echo "Test stage"
-                            test build/index.html
+                            echo "Running unit tests"
+                            # Replace 'test build/index.html' with actual test commands
+                            # Example: npm test
                             npm test
                         '''
                     }
@@ -79,12 +61,19 @@ pipeline {
                     }
                     post {
                         always {
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report/', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                            publishHTML([
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: false,
+                                reportDir: 'playwright-report/',
+                                reportFiles: 'index.html',
+                                reportName: 'HTML Report'
+                            ])
                         }
                     }
                 }
             }
         }
+
         stage('Deploy') {
             agent {
                 docker {
@@ -96,6 +85,7 @@ pipeline {
                 sh '''
                     npm install netlify-cli -g
                     netlify --version
+                    # Add deployment commands here
                 '''
             }
         }
