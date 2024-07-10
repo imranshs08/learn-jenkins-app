@@ -61,7 +61,7 @@ pipeline {
                     }
                     post {
                         always {
-                            publishHTML([
+                            publishHTML(target: [
                                 allowMissing: false,
                                 alwaysLinkToLastBuild: false,
                                 reportDir: 'playwright-report/',
@@ -73,6 +73,7 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy') {
             agent {
                 docker {
@@ -84,19 +85,16 @@ pipeline {
                 sh '''
                     npm install netlify-cli -g
                     netlify --version
+                    # Add deployment commands here
                 '''
             }
-            post {
-                    always {
-                        publishHTML([
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: false,
-                            reportDir: 'playwright-report/',
-                            reportFiles: 'index.html',
-                            reportName: 'HTML Report'
-                    ])
-                }
-            }
+        }
+    }
+
+    post {
+        always {
+            // Example of additional post-build actions, if any
+            echo 'Pipeline execution completed.'
         }
     }
 }
